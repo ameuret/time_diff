@@ -1,13 +1,25 @@
-require 'rubygems'
-require 'active_support/all'
+# require 'active_support/time'
 require 'i18n'
 
 class Time
+  SECONDS_PER = {
+    'year' => 365 * 86_400, # Leap years are accounted for in the days part
+    'month' => 86_400 * 30,
+    'week' => 86_400 * 7,
+    'day' => 86_400,
+    'hour' => 3600,
+    'minute' => 60,
+    'second' => 1
+  }.freeze
+
   def self.diff(start_date, end_date, format_string='%y, %M, %w, %d and %h:%m:%s')
-    #I18n.load_path += Dir.glob("lib/*.yml")
+    I18n.available_locales = [:en]
+    I18n.default_locale = :en
+#I18n.load_path += Dir.glob("lib/*.yml")
     start_time = start_date.to_time if start_date.respond_to?(:to_time)
     end_time = end_date.to_time if end_date.respond_to?(:to_time)
     distance_in_seconds = ((end_time - start_time).abs).round
+    # byebg
 
     components = get_time_diff_components(%w(year month week day hour minute second), distance_in_seconds)
     time_diff_components = {:year => components[0], :month => components[1], :week => components[2], :day => components[3], :hour => components[4], :minute => components[5], :second => components[6]}
@@ -46,9 +58,9 @@ class Time
   def self.get_time_diff_components(intervals, distance_in_seconds)
     components = []
     intervals.each do |interval|
-        component = (distance_in_seconds / 1.send(interval)).floor
-        distance_in_seconds -= component.send(interval)
-        components << component
+      component = (distance_in_seconds / SECONDS_PER[interval]).floor
+      distance_in_seconds -= component * SECONDS_PER[interval]
+      components << component
     end
     components
   end
@@ -68,7 +80,7 @@ class Time
   end
 
   def Time.pluralize(word, count)
-    return count != 1 ? I18n.t(word.pluralize, :default => word.pluralize) : I18n.t(word, :default =>  word)
+    return count != 1 ? I18n.t("#{word}s", :default => "#{word}s") : I18n.t(word, :default =>  word)
   end
 
   def Time.remove_format_string_for_zero_components(time_diff_components, format_string)

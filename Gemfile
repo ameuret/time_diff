@@ -1,16 +1,15 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
-gem 'activesupport'
+# gem 'coveralls_reborn', require: false
 gem 'i18n'
-gem 'coveralls', :require => false
-# Add dependencies required to use your gem here.
-# Example:
-#   gem "activesupport", ">= 2.3.5"
+gem 'jeweler', '~> 2.3'
+gem 'rdoc', '~> 6.14'
+gem 'test-unit', '~> 3.6'
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development do
-  gem "shoulda", ">= 0"
-  gem "bundler"
-  gem "rcov", ">= 0"
+  gem 'rake', '~> 13.2'
+  gem 'shoulda', '~> 3.6'
+  gem 'simplecov', '>= 0'
 end
