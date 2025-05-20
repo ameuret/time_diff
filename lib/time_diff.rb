@@ -1,3 +1,4 @@
+require 'rubygems'
 # require 'active_support/time'
 require 'i18n'
 
@@ -84,12 +85,12 @@ class Time
   end
 
   def Time.remove_format_string_for_zero_components(time_diff_components, format_string)
-    [{:year => '%y'}, {:month => '%M'}, {:week => '%w'}].each do |component|
+    [{minute: '%N'}, {hour: '%H'}, {:year => '%y'}, {:month => '%M'}, {:week => '%w'}].each do |component|
       key = component.keys.first
       value = component.values.first
-      format_string.gsub!("#{value}, ",'') if time_diff_components[key] == 0
+      format_string.gsub!(/#{value},?\s?/,'') if time_diff_components[key].nil? || time_diff_components[key].zero?
     end
-    if time_diff_components[:day] == 0
+    if time_diff_components[:day].nil? || time_diff_components[:day].zero?
       (format_string.slice(0..1) == '%d')? format_string.gsub!('%d ','') : format_string.gsub!(', %d','')
     end
     format_string.slice!(0..3) if format_string.slice(0..3) == 'and ' 
